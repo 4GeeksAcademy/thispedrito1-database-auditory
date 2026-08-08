@@ -1,97 +1,128 @@
-## Inscripciones en 'Intro to Python'
-Resultado: 
-| student_name | student_email                     | completion_percentage |
-| ------------ | --------------------------------- | --------------------- |
-| Emily Watson | emily.watson@student.edutrack.com | 85                    |
-| Klaus Weber  | klaus.weber@student.edutrack.com  | 92                    |
-| Marco Rossi  | marco.rossi@student.edutrack.com  | 88                    |
-| Priya Sharma | priya.sharma@student.edutrack.com | 55                    |
+# Informe de auditoría — EduTrack v2 (esquema normalizado)
 
-## Porcentaje de completition <10
-Resultado: 
-| student_name    | course_title          | completion_percentage |
-| --------------- | --------------------- | --------------------- |
-| Lucia Fernandes | Web Design Basics     | 5                     |
-| Lucia Fernandes | Digital Marketing 101 | 3                     |
-| Lucia Fernandes | Advanced Python       | 0                     |
-| Yuki Nakamura   | UI/UX Fundamentals    | 0                     |
-| Pierre Dubois   | UI/UX Fundamentals    | 0                     |
-## Instructor = NULL
-Resultado: 2
-## Estudiantes mayor completition porcentage
-Resultado: 
-| student_name  | student_email                      | course_title           | completion_percentage |
-| ------------- | ---------------------------------- | ---------------------- | --------------------- |
-| Emily Watson  | emily.watson@student.edutrack.com  | Web Design Basics      | 60                    |
-| Priya Sharma  | priya.sharma@student.edutrack.com  | Intro to Python        | 55                    |
-| Yuki Nakamura | yuki.nakamura@student.edutrack.com | Data Analysis with SQL | 45                    |
-| Emily Watson  | emily.watson@student.edutrack.com  | Advanced Python        | 40                    |
-| James Miller  | james.miller@test.com              | Intro to Python        | 30                    |
+Auditoría sobre las tablas relacionadas `students`, `courses` y `enrollments`.
+Consultas en `queries_v2.sql`. Diagrama entidad-relación en `diagram.png`.
 
-## Inscripciones en el ultimo año
+## Diagrama entidad-relación
+
+![Diagrama E/R](./diagram.png)
+
+Relaciones del esquema:
+- _(rellena: cómo se relaciona students con enrollments, y courses con enrollments — tipo 1:n / n:m y por qué claves)_
+
+---
+
+## 1. Inscripciones con estudiante, curso y % de completado (INNER JOIN)
+
 Resultado:
-| id | student_id | student_name    | student_email                        | course_id | course_title           | category    | enrollment_date | completion_percentage | passed | monthly_fee_paid | instructor   |
-| -- | ---------- | --------------- | ------------------------------------ | --------- | ---------------------- | ----------- | --------------- | --------------------- | ------ | ---------------- | ------------ |
-| 17 | 1          | Emily Watson    | emily.watson@student.edutrack.com    | 5         | Advanced Python        | Programming | 2025-03-05      | 40                    | false  | 69.99            | Carlos Vega  |
-| 16 | 6          | Pierre Dubois   | pierre.dubois@student.edutrack.com   | 3         | Data Analysis with SQL | Data        | 2025-02-20      | 20                    | false  | 59.99            | Marta López  |
-| 15 | 7          | Priya Sharma    | priya.sharma@student.edutrack.com    | 1         | Intro to Python        | Programming | 2025-01-10      | 55                    | false  | 49.99            | Marta López  |
-| 12 | 7          | Priya Sharma    | priya.sharma@student.edutrack.com    | 4         | Digital Marketing 101  | Marketing   | 2024-12-01      | 70                    | true   | 29.99            | Lucia Prades |
-| 11 | 6          | Pierre Dubois   | pierre.dubois@student.edutrack.com   | 6         | UI/UX Fundamentals     | Design      | 2024-11-05      | 0                     | false  | 44.99            | null         |
-| 10 | 5          | Yuki Nakamura   | yuki.nakamura@student.edutrack.com   | 6         | UI/UX Fundamentals     | Design      | 2024-10-11      | 0                     | false  | 44.99            | null         |
-| 9  | 5          | Yuki Nakamura   | yuki.nakamura@student.edutrack.com   | 3         | Data Analysis with SQL | Data        | 2024-09-03      | 45                    | false  | 59.99            | Marta López  |
-| 8  | 4          | Marco Rossi     | marco.rossi@student.edutrack.com     | 1         | Intro to Python        | Programming | 2024-08-09      | 88                    | true   | 49.99            | Marta López  |
-| 6  | 3          | Lucia Fernandes | lucia.fernandes@student.edutrack.com | 4         | Digital Marketing 101  | Marketing   | 2024-07-01      | 3                     | false  | 29.99            | Lucia Prades |
-| 14 | 9          | Alex Chen       | alex.chen@test.com                   | 2         | Web Design Basics      | Design      | 2024-06-30      | 10                    | false  | 39.99            | Carlos Vega  |
-| 5  | 3          | Lucia Fernandes | lucia.fernandes@student.edutrack.com | 2         | Web Design Basics      | Design      | 2024-06-20      | 5                     | false  | 39.99            | Carlos Vega  |
-| 13 | 8          | James Miller    | james.miller@test.com                | 1         | Intro to Python        | Programming | 2024-05-22      | 30                    | false  | 49.99            | Marta López  |
-| 4  | 2          | Klaus Weber     | klaus.weber@student.edutrack.com     | 3         | Data Analysis with SQL | Data        | 2024-05-01      | 78                    | true   | 59.99            | Marta López  |
-| 2  | 1          | Emily Watson    | emily.watson@student.edutrack.com    | 2         | Web Design Basics      | Design      | 2024-04-15      | 60                    | false  | 39.99            | Carlos Vega  |
-| 3  | 2          | Klaus Weber     | klaus.weber@student.edutrack.com     | 1         | Intro to Python        | Programming | 2024-03-12      | 92                    | true   | 49.99            | Marta López  |
-| 1  | 1          | Emily Watson    | emily.watson@student.edutrack.com    | 1         | Intro to Python        | Programming | 2024-03-10      | 85                    | true   | 49.99            | Marta López  |
 
-## INSERT Lucia Fernandes into Advanced Python
+| name            | title                  | completion_percentage |
+| --------------- | ---------------------- | --------------------- |
+| Emily Watson    | Intro to Python        | 85                    |
+| Emily Watson    | Web Design Basics      | 60                    |
+| Klaus Weber     | Intro to Python        | 92                    |
+| Klaus Weber     | Data Analysis with SQL | 78                    |
+| Lucia Fernandes | Web Design Basics      | 5                     |
+| Lucia Fernandes | Digital Marketing 101  | 3                     |
+| Marco Rossi     | Advanced Python        | 95                    |
+| Marco Rossi     | Intro to Python        | 88                    |
+| Yuki Nakamura   | Data Analysis with SQL | 45                    |
+| Yuki Nakamura   | UI/UX Fundamentals     | 0                     |
+| Pierre Dubois   | UI/UX Fundamentals     | 0                     |
+| Priya Sharma    | Digital Marketing 101  | 70                    |
+| Priya Sharma    | Intro to Python        | 55                    |
+| Pierre Dubois   | Data Analysis with SQL | 20                    |
+| Emily Watson    | Advanced Python        | 40                    |
+| Lucia Fernandes | Advanced Python        | 0                     |
+## 2. Estudiantes que aprobaron al menos un curso (INNER JOIN)
+
 Resultado:
-| student_name    | course_title          |
-| --------------- | --------------------- |
-| Lucia Fernandes | Web Design Basics     |
-| Lucia Fernandes | Digital Marketing 101 |
-| Lucia Fernandes | Advanced Python       |
 
-## UPDATE instructor NULL to Pending Assignment
-Resultado: 2
-## DELETE students with @test.com email
-Resultado: 2
-## Inscripciones por categoria
-Resultado: 
-| category    | total_inscripciones |
-| ----------- | ------------------- |
-| Marketing   | 2                   |
-| Programming | 7                   |
-| Design      | 4                   |
-| Data        | 3                   |
+| name         | title                  | email                             |
+| ------------ | ---------------------- | --------------------------------- |
+| Emily Watson | Intro to Python        | emily.watson@student.edutrack.com |
+| Klaus Weber  | Intro to Python        | klaus.weber@student.edutrack.com  |
+| Klaus Weber  | Data Analysis with SQL | klaus.weber@student.edutrack.com  |
+| Marco Rossi  | Advanced Python        | marco.rossi@student.edutrack.com  |
+| Marco Rossi  | Intro to Python        | marco.rossi@student.edutrack.com  |
+| Priya Sharma | Digital Marketing 101  | priya.sharma@student.edutrack.com |
 
-## Promedio de completition por curso
+## 3. % de completado medio por instructor (INNER JOIN + AVG)
+
 Resultado:
-| course_title           | promedio_completado    |
-| ---------------------- | ---------------------- |
-| UI/UX Fundamentals     | 0.00000000000000000000 |
-| Web Design Basics      | 32.5000000000000000    |
-| Digital Marketing 101  | 36.5000000000000000    |
-| Advanced Python        | 45.0000000000000000    |
-| Data Analysis with SQL | 47.6666666666666667    |
-| Intro to Python        | 80.0000000000000000    |
 
-## Curso con mas de 3 inscripciones
-Resultado: 
-| course_title    | total_inscripciones |
-| --------------- | ------------------- |
-| Intro to Python | 4                   |
+| instructor_name    | media_completado |
+| ------------------ | ---------------- |
+| Marta López        | 66.14            |
+| Carlos Vega        | 40.00            |
+| Lucia Prades       | 36.50            |
+| Pending assignment | 0.00             |
 
-## Ingresos totales por curso
-Resultado: 
+## 4. Estudiantes sin ninguna inscripción (LEFT JOIN)
+
+Resultado:
+
+| name          | email                              |
+| ------------- | ---------------------------------- |
+| Giulia Romano | giulia.romano@student.edutrack.com |
+
+## 5. Cursos sin ninguna inscripción (LEFT JOIN)
+
+Resultado:
+
+| title           |
+| --------------- |
+| Email Campaigns |
+
+## 6. Estudiantes inscritos en más de un curso (GROUP BY + HAVING)
+
+Resultado:
+
+| name            | numero_cursos |
+| --------------- | ------------- |
+| Pierre Dubois   | 2             |
+| Marco Rossi     | 2             |
+| Priya Sharma    | 2             |
+| Yuki Nakamura   | 2             |
+| Lucia Fernandes | 3             |
+| Emily Watson    | 3             |
+| Klaus Weber     | 2             |
+
+## 7. Ingresos totales por categoría a precio actual (SUM + GROUP BY)
+
+Resultado:
+
 | category    | ingresos_totales |
 | ----------- | ---------------- |
 | Programming | 409.93           |
 | Data        | 179.97           |
 | Design      | 169.96           |
 | Marketing   | 59.98            |
+
+Categoría que más ingresos genera: _(rellena)_
+
+## 8. Número de estudiantes por instructor (COUNT + GROUP BY)
+
+Resultado:
+
+| instructor_name    | numero_estudiantes |
+| ------------------ | ------------------ |
+| Carlos Vega        | 3                  |
+| Lucia Prades       | 2                  |
+| Marta López        | 6                  |
+| Pending assignment | 2                  |
+
+## 9. Inscripciones con student_id huérfano (integridad)
+
+Resultado:
+
+0 Filas
+
+## 10. Inscripciones con course_id huérfano (integridad)
+
+Resultado:
+
+0 Filas
+---
+
+
